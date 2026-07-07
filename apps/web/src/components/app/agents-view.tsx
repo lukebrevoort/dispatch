@@ -44,6 +44,7 @@ import { GlassSidebar } from "@/components/ui/glass-sidebar";
 import { uploadAgentMedia } from "@/lib/media-upload";
 import { type AgentType, isCliAgentType } from "@/lib/agent-types";
 import { type IdeType } from "@/lib/ide-types";
+import { type TerminalAppType } from "@/lib/terminal-app-types";
 import { cn } from "@/lib/utils";
 import { useAgentActions } from "@/hooks/use-agent-actions";
 import { useAgents } from "@/hooks/use-agents";
@@ -59,6 +60,7 @@ import { useAgentHotkeys } from "@/hooks/use-agent-hotkeys";
 type AgentsViewProps = {
   enabledAgentTypes: AgentType[];
   enabledIdes: IdeType[];
+  enabledTerminalApps: TerminalAppType[];
   isMobile: boolean;
   leftOpen: boolean;
   leftPanelOpen: boolean;
@@ -76,6 +78,7 @@ type AgentsViewProps = {
 export function AgentsView({
   enabledAgentTypes,
   enabledIdes,
+  enabledTerminalApps,
   isMobile,
   leftOpen,
   leftPanelOpen,
@@ -446,6 +449,7 @@ export function AgentsView({
               }
               enabledAgentTypes={enabledAgentTypes}
               enabledIdes={enabledIdes}
+              enabledTerminalApps={enabledTerminalApps}
               lastUsedAgentType={lastUsedAgentType}
               setOverflowAgentId={setOverflowAgentId}
               setDeleteTarget={setDeleteTarget}

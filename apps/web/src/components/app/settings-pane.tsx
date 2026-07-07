@@ -12,6 +12,7 @@ import { ReleasesAdmin } from "@/components/app/release-admin";
 import { UpdatesSection } from "@/components/app/release-manager";
 import { SecuritySettings } from "@/components/app/security-settings";
 import { ServiceStatus } from "@/components/app/service-status";
+import { TerminalAppSettings } from "@/components/app/terminal-app-settings";
 import { type ServiceState } from "@/components/app/types";
 import { WorktreeLocationSettings } from "@/components/app/worktree-location-settings";
 import { type IconColorId } from "@/hooks/use-icon-color";
@@ -19,6 +20,7 @@ import { useReleaseStream } from "@/hooks/use-release-stream";
 import { type ThemeId } from "@/hooks/use-theme";
 import { type AgentType } from "@/lib/agent-types";
 import { type IdeType } from "@/lib/ide-types";
+import { type TerminalAppType } from "@/lib/terminal-app-types";
 import { type SettingsSection } from "@/components/app/settings-state";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +38,8 @@ export type SettingsPaneProps = {
   onEnabledAgentTypesChange: (agentTypes: AgentType[]) => void;
   enabledIdes: IdeType[];
   onEnabledIdesChange: (ides: IdeType[]) => void;
+  enabledTerminalApps: TerminalAppType[];
+  onEnabledTerminalAppsChange: (apps: TerminalAppType[]) => void;
   apiState: ServiceState;
   dbState: ServiceState;
   serviceDotClass: (state: ServiceState) => string;
@@ -150,6 +154,8 @@ export function SettingsContent({
   onEnabledAgentTypesChange,
   enabledIdes,
   onEnabledIdesChange,
+  enabledTerminalApps,
+  onEnabledTerminalAppsChange,
   initialSubsection,
   onSubsectionChange,
   isAdmin,
@@ -167,6 +173,8 @@ export function SettingsContent({
   onEnabledAgentTypesChange: (agentTypes: AgentType[]) => void;
   enabledIdes: IdeType[];
   onEnabledIdesChange: (ides: IdeType[]) => void;
+  enabledTerminalApps: TerminalAppType[];
+  onEnabledTerminalAppsChange: (apps: TerminalAppType[]) => void;
   initialSubsection?: string;
   onSubsectionChange?: (subsection: string | null) => void;
   isAdmin: boolean;
@@ -216,6 +224,12 @@ export function SettingsContent({
               <IdeSettings
                 enabledIdes={enabledIdes}
                 onChange={onEnabledIdesChange}
+              />
+            </div>
+            <div className="border-t border-border">
+              <TerminalAppSettings
+                enabledTerminalApps={enabledTerminalApps}
+                onChange={onEnabledTerminalAppsChange}
               />
             </div>
             <div className="border-t border-border">

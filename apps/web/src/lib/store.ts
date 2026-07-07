@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
 
 import { type IdeType } from "./ide-types";
+import { type TerminalAppType } from "./terminal-app-types";
 
 export function atomWithLocalStorage<T>(key: string, initialValue: T) {
   const baseAtom = atom<T>(
@@ -67,6 +68,11 @@ export const soundCuesEnabledAtom = atomWithLocalStorage(
 export const preferredIdeAtom = atomWithLocalStorage<IdeType>(
   "dispatch:preferredIde",
   "vscode"
+);
+
+export const preferredTerminalAppAtom = atomWithLocalStorage<TerminalAppType>(
+  "dispatch:preferredTerminalApp",
+  "ghostty"
 );
 
 // Cached view of the server-wide cross-repo messaging gate (lets agents

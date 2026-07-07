@@ -31,6 +31,7 @@ import {
 } from "@/components/app/feedback-panel";
 import { IdeLaunchButton } from "@/components/app/ide-launch-button";
 import { PersonaLauncher } from "@/components/app/persona-launcher";
+import { TerminalLaunchButton } from "@/components/app/terminal-launch-button";
 import { SessionSettingsDialog } from "@/components/app/session-settings-dialog";
 import { type Agent, type AgentVisualState } from "@/components/app/types";
 import { ActivityBars } from "@/components/ui/activity-bars";
@@ -48,6 +49,7 @@ import { useCopyText } from "@/hooks/use-copy";
 import { api } from "@/lib/api";
 import { type AgentType } from "@/lib/agent-types";
 import { type IdeType } from "@/lib/ide-types";
+import { type TerminalAppType } from "@/lib/terminal-app-types";
 import { cn } from "@/lib/utils";
 
 function RepoLabel({
@@ -130,6 +132,7 @@ export type AgentCardProps = {
   closeOnSessionAction?: boolean;
   enabledAgentTypes: AgentType[];
   enabledIdes: IdeType[];
+  enabledTerminalApps: TerminalAppType[];
   containerProps?: AgentCardContainerProps;
 };
 
@@ -201,6 +204,7 @@ export function AgentCard({
   closeOnSessionAction = false,
   enabledAgentTypes,
   enabledIdes,
+  enabledTerminalApps,
   containerProps,
 }: AgentCardProps): JSX.Element {
   const {
@@ -624,6 +628,11 @@ export function AgentCard({
                             enabledIdes={enabledIdes}
                           />
                         ) : null}
+                        <TerminalLaunchButton
+                          agentId={agent.id}
+                          tmuxSession={agent.tmuxSession}
+                          enabledTerminalApps={enabledTerminalApps}
+                        />
                         {agent.gitContext?.isWorktree && agent.cwd ? (
                           <Tooltip>
                             <TooltipTrigger asChild>

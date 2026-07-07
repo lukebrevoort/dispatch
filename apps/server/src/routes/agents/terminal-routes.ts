@@ -5,7 +5,12 @@ import type { FastifyInstance } from "fastify";
 import { getQuickPhrase } from "../../db/quick-phrases.js";
 import { spawn as spawnPty } from "../../shared/terminal/bun-pty.js";
 import { substituteArgs } from "../../templates/arg-parser.js";
+import { launchExternalTerminal } from "../../terminal/external-launch.js";
 import { TmuxTerminal } from "../../terminal/tmux-terminal.js";
+import {
+  getEnabledTerminalApps,
+  sanitizeEnabledTerminalApps,
+} from "../../terminal-app-settings.js";
 import { errorMessage } from "../../shared/lib/error-message.js";
 import { decodeClientMessage, type AgentRouteDeps } from "./shared.js";
 
@@ -42,6 +47,39 @@ export async function registerAgentTerminalRoutes(
       return deps.handleAgentError(reply, error);
     }
   });
+
+  app.post(
+    "/api/v1/agents/:id/terminal/open-external",
+    async (request, reply) => {
+      const params = request.params as { id?: string };
+      const body = request.body as { app?: unknown } | null;
+      const id = params.id ?? "";
+
+      const [requestedApp] = sanitizeEnabledTerminalApps([body?.app]);
+      if (!requestedApp) {
+        return reply.code(400).send({ error: "app must be a known terminal." });
+      }
+
+      try {
+        const enabled = await getEnabledTerminalApps(deps.pool);
+        if (!enabled.includes(requestedApp)) {
+          return reply
+            .code(400)
+            .send({ error: `${requestedApp} is not enabled in settings.` });
+        }
+
+        const access = await deps.agentManager.getTerminalAccess(id);
+        if (access.mode !== "tmux") {
+          return reply.code(409).send({ error: access.message });
+        }
+
+        await launchExternalTerminal(requestedApp, access.sessionName);
+        return reply.code(204).send();
+      } catch (error) {
+        return deps.handleAgentError(reply, error);
+      }
+    }
+  );
 
   app.post(
     "/api/v1/agents/:id/terminal/copy-mode/exit",

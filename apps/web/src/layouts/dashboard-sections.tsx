@@ -119,6 +119,7 @@ export function AgentsRoute(): JSX.Element {
     <AgentsView
       enabledAgentTypes={context.enabledAgentTypes}
       enabledIdes={context.enabledIdes}
+      enabledTerminalApps={context.enabledTerminalApps}
       isMobile={context.isMobile}
       leftOpen={context.leftOpen}
       leftPanelOpen={context.leftPanelOpen}
@@ -212,6 +213,8 @@ export function SettingsRoute(): JSX.Element {
           onEnabledAgentTypesChange={context.setEnabledAgentTypes}
           enabledIdes={context.enabledIdes}
           onEnabledIdesChange={context.setEnabledIdes}
+          enabledTerminalApps={context.enabledTerminalApps}
+          onEnabledTerminalAppsChange={context.setEnabledTerminalApps}
           initialSubsection={subsection}
           onSubsectionChange={(nextSubsection) => {
             if (section !== "help") return;

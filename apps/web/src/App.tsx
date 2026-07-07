@@ -23,6 +23,10 @@ import {
   sanitizeEnabledAgentTypes,
 } from "@/lib/agent-types";
 import { type IdeType, sanitizeEnabledIdes } from "@/lib/ide-types";
+import {
+  type TerminalAppType,
+  sanitizeEnabledTerminalApps,
+} from "@/lib/terminal-app-types";
 import { sortAgentsByCreatedAtDesc } from "@/lib/agent-sort";
 import { TipQueueProvider } from "@/components/tips/tip-queue-provider";
 import { TipsVersionInit } from "@/components/tips/tips-version-init";
@@ -71,6 +75,9 @@ export function DashboardLayout(): JSX.Element {
     ...AGENT_TYPES,
   ]);
   const [enabledIdes, setEnabledIdes] = useState<IdeType[]>([]);
+  const [enabledTerminalApps, setEnabledTerminalApps] = useState<
+    TerminalAppType[]
+  >([]);
   const { data: agents = [] } = useQuery<Agent[]>({
     queryKey: ["agents"],
     queryFn: async () => {
@@ -112,6 +119,19 @@ export function DashboardLayout(): JSX.Element {
       .then((payload) => {
         if (cancelled) return;
         setEnabledIdes(sanitizeEnabledIdes(payload.enabledIdes));
+      })
+      .catch(() => {
+        if (cancelled) return;
+      });
+
+    void api<{ enabledTerminalApps: TerminalAppType[] }>(
+      "/api/v1/app/settings/terminal-apps"
+    )
+      .then((payload) => {
+        if (cancelled) return;
+        setEnabledTerminalApps(
+          sanitizeEnabledTerminalApps(payload.enabledTerminalApps)
+        );
       })
       .catch(() => {
         if (cancelled) return;
@@ -176,6 +196,8 @@ export function DashboardLayout(): JSX.Element {
     setEnabledAgentTypes,
     enabledIdes,
     setEnabledIdes,
+    enabledTerminalApps,
+    setEnabledTerminalApps,
     handleLogout,
     isMobile,
     leftOpen,

@@ -5,6 +5,7 @@ import type { NavSection } from "@/components/app/sidebar-shell";
 import type { Agent, ServiceState } from "@/components/app/types";
 import type { AgentType } from "@/lib/agent-types";
 import type { IdeType } from "@/lib/ide-types";
+import type { TerminalAppType } from "@/lib/terminal-app-types";
 import type { useIconColor } from "@/hooks/use-icon-color";
 import type { useTheme } from "@/hooks/use-theme";
 
@@ -14,6 +15,8 @@ export type DashboardContextValue = {
   setEnabledAgentTypes: Dispatch<SetStateAction<AgentType[]>>;
   enabledIdes: IdeType[];
   setEnabledIdes: Dispatch<SetStateAction<IdeType[]>>;
+  enabledTerminalApps: TerminalAppType[];
+  setEnabledTerminalApps: Dispatch<SetStateAction<TerminalAppType[]>>;
   handleLogout: () => void;
   isMobile: boolean;
   leftOpen: boolean;

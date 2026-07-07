@@ -18,6 +18,12 @@ import {
 } from "../agent-type-settings.js";
 import { IDE_TYPES, getEnabledIdes, setEnabledIdes } from "../ide-settings.js";
 import {
+  TERMINAL_APP_TYPES,
+  getEnabledTerminalApps,
+  sanitizeEnabledTerminalApps,
+  setEnabledTerminalApps,
+} from "../terminal-app-settings.js";
+import {
   SlackNotifier,
   isValidSlackWebhookUrl,
 } from "../notifications/slack.js";
@@ -418,6 +424,30 @@ export async function registerSystemRoutes(
     }
 
     return { enabledIdes: await setEnabledIdes(deps.pool, uniqueIdes) };
+  });
+
+  app.get("/api/v1/app/settings/terminal-apps", async () => {
+    return { enabledTerminalApps: await getEnabledTerminalApps(deps.pool) };
+  });
+
+  app.post("/api/v1/app/settings/terminal-apps", async (request, reply) => {
+    const body = request.body as { enabledTerminalApps?: unknown } | null;
+    if (!Array.isArray(body?.enabledTerminalApps)) {
+      return reply
+        .code(400)
+        .send({ error: "enabledTerminalApps must be an array." });
+    }
+
+    const uniqueApps = sanitizeEnabledTerminalApps(body.enabledTerminalApps);
+    if (uniqueApps.length !== body.enabledTerminalApps.length) {
+      return reply.code(400).send({
+        error: `enabledTerminalApps must only include ${TERMINAL_APP_TYPES.join(", ")}.`,
+      });
+    }
+
+    return {
+      enabledTerminalApps: await setEnabledTerminalApps(deps.pool, uniqueApps),
+    };
   });
 
   app.get("/api/v1/app/settings/cross-repo-messaging", async () => {

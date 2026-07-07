@@ -629,6 +629,65 @@ describe("POST /api/v1/app/settings/ides", () => {
   });
 });
 
+describe("GET /api/v1/app/settings/terminal-apps", () => {
+  it("returns enabled terminal apps", async () => {
+    const res = await ctx.app.inject({
+      method: "GET",
+      url: "/api/v1/app/settings/terminal-apps",
+      headers: { cookie: sessionCookie },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(Array.isArray(body.enabledTerminalApps)).toBe(true);
+  });
+});
+
+describe("POST /api/v1/app/settings/terminal-apps", () => {
+  it("rejects non-array enabledTerminalApps", async () => {
+    const res = await ctx.app.inject({
+      method: "POST",
+      url: "/api/v1/app/settings/terminal-apps",
+      headers: { cookie: sessionCookie },
+      payload: { enabledTerminalApps: "ghostty" },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error).toMatch(/enabledTerminalApps/);
+  });
+
+  it("rejects array with invalid terminal types", async () => {
+    const res = await ctx.app.inject({
+      method: "POST",
+      url: "/api/v1/app/settings/terminal-apps",
+      headers: { cookie: sessionCookie },
+      payload: { enabledTerminalApps: ["ghostty", "kitty"] },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error).toMatch(/enabledTerminalApps must only include/);
+  });
+
+  it("accepts valid terminal types", async () => {
+    const res = await ctx.app.inject({
+      method: "POST",
+      url: "/api/v1/app/settings/terminal-apps",
+      headers: { cookie: sessionCookie },
+      payload: { enabledTerminalApps: ["ghostty", "terminal"] },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().enabledTerminalApps).toEqual(["ghostty", "terminal"]);
+  });
+
+  it("accepts empty array to disable all terminals", async () => {
+    const res = await ctx.app.inject({
+      method: "POST",
+      url: "/api/v1/app/settings/terminal-apps",
+      headers: { cookie: sessionCookie },
+      payload: { enabledTerminalApps: [] },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().enabledTerminalApps).toEqual([]);
+  });
+});
+
 describe("POST /api/v1/energy-report", () => {
   it("accepts any body and returns 204", async () => {
     const res = await ctx.app.inject({

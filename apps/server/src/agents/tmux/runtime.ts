@@ -87,6 +87,14 @@ export function createTmuxRuntime(logger: FastifyBaseLogger): AgentRuntime {
         ["set-option", "-t", input.sessionName, "mouse", "on"],
         { allowedExitCodes: [0, 1] }
       );
+      // Pin multi-client sizing: the most recently active client dictates
+      // pane geometry. This is tmux ≥3.1's default, but user tmux.conf can
+      // override it — and external attaches (Open in Terminal) depend on it.
+      await runCommand(
+        "tmux",
+        ["set-option", "-w", "-t", input.sessionName, "window-size", "latest"],
+        { allowedExitCodes: [0, 1] }
+      );
       // Allow DCS passthrough so agent CLIs that wrap escape sequences
       // (e.g. synchronized output) can reach the outer terminal directly.
       await runCommand(

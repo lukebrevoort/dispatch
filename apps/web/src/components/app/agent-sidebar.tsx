@@ -20,6 +20,7 @@ import {
   sortAgentTypes,
 } from "@/lib/agent-types";
 import { type IdeType } from "@/lib/ide-types";
+import { type TerminalAppType } from "@/lib/terminal-app-types";
 import { agentSidebarOrderAtom, reconcileAgentSidebarOrder } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,7 @@ export type AgentListContentProps = {
   onOpenCreateDialog: (type?: AgentType) => void;
   enabledAgentTypes: AgentType[];
   enabledIdes: IdeType[];
+  enabledTerminalApps: TerminalAppType[];
   lastUsedAgentType: AgentType | null;
   setOverflowAgentId: (
     value: string | null | ((current: string | null) => string | null)
@@ -64,6 +66,7 @@ export function AgentListContent({
   onOpenCreateDialog,
   enabledAgentTypes,
   enabledIdes,
+  enabledTerminalApps,
   lastUsedAgentType,
   setOverflowAgentId: _setOverflowAgentId,
   setDeleteTarget,
@@ -353,6 +356,7 @@ export function AgentListContent({
                   sendTerminalInput={sendTerminalInput}
                   enabledAgentTypes={enabledAgentTypes}
                   enabledIdes={enabledIdes}
+                  enabledTerminalApps={enabledTerminalApps}
                   connectedAgentId={connectedAgentId}
                   onOpenFeedbackDetail={onOpenFeedbackDetail}
                   feedbackDetailState={feedbackDetailState}
